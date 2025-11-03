@@ -1,0 +1,430 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container my-5">
+  <h2 class="mb-4 fw-bold text-center">GROUND CHECK LOCALIZER PERFORMANCE CURVE</h2>
+
+  <form id="groundCheckForm" method="POST" action="{{ url_for('groundcheck.ground_check') }}">
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="form-label fw-bold">Lokasi:</label>
+        <select name="lokasi" class="form-select" required>
+          <option value="AirNav Surabaya">AirNav Surabaya</option>
+          <option value="AirNav Malang">AirNav Malang</option>
+          <option value="AirNav Dhoho">AirNav Dhoho</option>
+        </select>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label fw-bold">Tanggal:</label>
+        <input type="date" name="tanggal" class="form-control" required>
+      </div>
+    </div>
+
+   <div class="table-responsive">
+    <table class="table table-bordered text-center align-middle">
+      <thead class="table-light">
+        <tr>
+          <th rowspan="2">FREQ</th>
+          <th rowspan="2">JARAK (M)</th>
+          <th rowspan="2">DEGREE (°)</th>
+          <th colspan="6">TX 1</th>
+          <th colspan="6">TX 2</th>
+        </tr>
+        <tr>
+          <th>DDM (%)</th><th>DDM (µA)</th><th>SUM (%)</th>
+          <th>MOD 90 Hz</th><th>MOD 150 Hz</th><th>RF LEVEL (dB)</th>
+          <th>DDM (%)</th><th>DDM (µA)</th><th>SUM (%)</th>
+          <th>MOD 90 Hz</th><th>MOD 150 Hz</th><th>RF LEVEL (dB)</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for jarak, degree in data_90hz %}
+        <tr>
+          {% if loop.first %}<td rowspan="{{ data_90hz|length }}">90 Hz</td>{% endif %}
+          <td>
+              {{ jarak }}
+              <input type="hidden" name="hz90_{{ loop.index0 }}_jarak" value="{{ jarak }}">
+          </td>
+          <td>
+              {{ degree }}
+              <input type="hidden" name="hz90_{{ loop.index0 }}_degree" value="{{ degree }}">
+          </td>
+          <td><input type="number" step="any" style="min-width:90px;" class="form-control" name="hz90_{{ loop.index0 }}_0"></td>
+          <td><input type="number" step="any" style="min-width:90px;" class="form-control" name="hz90_{{ loop.index0 }}_1"></td>
+          <td><input type="number" step="any" style="min-width:90px;" class="form-control" name="hz90_{{ loop.index0 }}_2"></td>
+          <td><input type="number" step="any" style="min-width:90px;" class="form-control" name="hz90_{{ loop.index0 }}_3"></td>
+          <td><input type="number" step="any" style="min-width:90px;" class="form-control" name="hz90_{{ loop.index0 }}_4"></td>
+          <td><input type="number" step="any" style="min-width:90px;" class="form-control" name="hz90_{{ loop.index0 }}_5"></td>
+          <td><input type="number" step="any" style="min-width:90px;" class="form-control" name="hz90_{{ loop.index0 }}_6"></td>
+          <td><input type="number" step="any" style="min-width:90px;" class="form-control" name="hz90_{{ loop.index0 }}_7"></td>
+          <td><input type="number" step="any" style="min-width:90px;" class="form-control" name="hz90_{{ loop.index0 }}_8"></td>
+          <td><input type="number" step="any" style="min-width:90px;" class="form-control" name="hz90_{{ loop.index0 }}_9"></td>
+          <td><input type="number" step="any" style="min-width:90px;" class="form-control" name="hz90_{{ loop.index0 }}_10"></td>
+          <td><input type="number" step="any" style="min-width:90px;" class="form-control" name="hz90_{{ loop.index0 }}_11"></td>
+        </tr>
+        {% endfor %}
+
+        <tr>
+          <td></td>
+          <td>0</td>
+          <td>0°</td>
+          <td><input type="number" step="any" style="min-width:90px;" class="form-control" name="center_0"></td>
+          <td><input type="number" step="any" style="min-width:90px;" class="form-control" name="center_1"></td>
+          <td><input type="number" step="any" style="min-width:90px;" class="form-control" name="center_2"></td>
+          <td><input type="number" step="any" style="min-width:90px;" class="form-control" name="center_3"></td>
+          <td><input type="number" step="any" style="min-width:90px;" class="form-control" name="center_4"></td>
+          <td><input type="number" step="any" style="min-width:90px;" class="form-control" name="center_5"></td>
+          <td><input type="number" step="any" style="min-width:90px;" class="form-control" name="center_6"></td>
+          <td><input type="number" step="any" style="min-width:90px;" class="form-control" name="center_7"></td>
+          <td><input type="number" step="any" style="min-width:90px;" class="form-control" name="center_8"></td>
+          <td><input type="number" step="any" style="min-width:90px;" class="form-control" name="center_9"></td>
+          <td><input type="number" step="any" style="min-width:90px;" class="form-control" name="center_10"></td>
+          <td><input type="number" step="any" style="min-width:90px;" class="form-control" name="center_11"></td>
+        </tr>
+
+        {% for jarak, degree in data_150hz %}
+        <tr>
+          {% if loop.first %}<td rowspan="{{ data_150hz|length }}">150 Hz</td>{% endif %}
+          <td>
+              {{ jarak }}
+              <input type="hidden" name="hz150_{{ loop.index0 }}_jarak" value="{{ jarak }}">
+          </td>
+          <td>
+              {{ degree }}
+              <input type="hidden" name="hz150_{{ loop.index0 }}_degree" value="{{ degree }}">
+          </td>
+          <td><input type="number" step="any" style="min-width:90px;" class="form-control" name="hz150_{{ loop.index0 }}_0"></td>
+          <td><input type="number" step="any" style="min-width:90px;" class="form-control" name="hz150_{{ loop.index0 }}_1"></td>
+          <td><input type="number" step="any" style="min-width:90px;" class="form-control" name="hz150_{{ loop.index0 }}_2"></td>
+          <td><input type="number" step="any" style="min-width:90px;" class="form-control" name="hz150_{{ loop.index0 }}_3"></td>
+          <td><input type="number" step="any" style="min-width:90px;" class="form-control" name="hz150_{{ loop.index0 }}_4"></td>
+          <td><input type="number" step="any" style="min-width:90px;" class="form-control" name="hz150_{{ loop.index0 }}_5"></td>
+          <td><input type="number" step="any" style="min-width:90px;" class="form-control" name="hz150_{{ loop.index0 }}_6"></td>
+          <td><input type="number" step="any" style="min-width:90px;" class="form-control" name="hz150_{{ loop.index0 }}_7"></td>
+          <td><input type="number" step="any" style="min-width:90px;" class="form-control" name="hz150_{{ loop.index0 }}_8"></td>
+          <td><input type="number" step="any" style="min-width:90px;" class="form-control" name="hz150_{{ loop.index0 }}_9"></td>
+          <td><input type="number" step="any" style="min-width:90px;" class="form-control" name="hz150_{{ loop.index0 }}_10"></td>
+          <td><input type="number" step="any" style="min-width:90px;" class="form-control" name="hz150_{{ loop.index0 }}_11"></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    </div>
+
+    <div class="text-end mb-4">
+  <button type="button" class="btn btn-primary" onclick="generateGrafik()">Generate Grafik</button>
+  <button type="button" class="btn btn-danger" onclick="resetFormData()">Reset Data</button>
+</div>
+
+<div class="mb-3">
+  <label class="fw-bold me-3">Pilih Grafik:</label>
+    <input type="radio" class="btn-check" name="chartMode" id="showNormal" value="normal" checked onchange="toggleChartMode()">
+    <label class="btn btn-outline-primary" for="showNormal">Opsi 1</label>
+    <input type="radio" class="btn-check" name="chartMode" id="showMirror" value="mirror" onchange="toggleChartMode()">
+    <label class="btn btn-outline-primary" for="showMirror">Opsi 2</label>
+  </div>
+
+
+
+<div id="tx1NormalWrapper" class="my-4 p-3" style="background:white; border-radius:10px;">
+  <canvas id="chartTx1Normal"></canvas>
+</div>
+<div id="tx2NormalWrapper" class="my-4 p-3" style="background:white; border-radius:10px;">
+  <canvas id="chartTx2Normal"></canvas>
+</div>
+    <div id="mirrorWrapper" class="my-4 p-3 bg-white rounded-3" style="display:none;">
+      <canvas id="chartMirror"></canvas>
+    </div>
+
+
+    <div class="row mt-2">
+      <div class="col-md-6 d-flex flex-column">
+  <h5 class="fw-bold">Teknisi On Duty:</h5>
+  <div id="teknisi-container">
+    <input type="text" name="teknisi[]" class="form-control mb-2" placeholder="Teknisi">
+  </div>
+  <div class="mt-2">
+    <button type="button" class="btn btn-sm btn-outline-primary" onclick="addField('teknisi')">+ Teknisi</button>
+    <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeField('teknisi')">❌</button>
+  </div>
+</div>
+  <div class="row mt-2">
+  <div class="col-12">
+    <label class="form-label fw-bold">Catatan:</label>
+    <textarea name="catatan" class="form-control" rows="3" placeholder="Tambahkan catatan..."></textarea>
+  </div>
+</div>
+    </div>
+  
+
+
+  <div class="mt-4 d-flex justify-content-end align-items-center gap-2 mb-5">
+<label for="manager_tujuan" class="form-label fw-bold"></label>
+<select name="manager_tujuan" class="form-select w-auto" required>
+  <option value="">-- Pilih Manager --</option>
+  <option value="Manager Teknik 1">Manager Teknik 1 </option>
+  <option value="Manager Teknik 2">Manager Teknik 2 </option>
+  <option value="Manager Teknik 3">Manager Teknik 3 </option>
+  <option value="Manager Teknik 4">Manager Teknik 4</option>
+  <option value="Manager Teknik 5">Manager Teknik 5 </option>
+</select>
+<button type="submit" name="action" value="kirim" class="btn btn-success">
+  Kirim ke Manager
+</button>
+</form>
+  </div>
+</div>
+<footer class="text-center text-muted py-3 small bg-white border-top mt-auto">
+    {% block footer %}{% endblock %}
+    &copy; <span id="year"></span> AirNav Surabaya. All Rights Reserved.
+</footer>
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@1.4.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1"></script>
+
+<script>
+let chartInstances = {}; 
+
+function addField(type) {
+    let container = document.getElementById(type + '-container');
+    let input = document.createElement('input');
+    input.type = 'text';
+    input.name = type + '[]';
+    input.className = 'form-control mb-2';
+    input.placeholder = (type.charAt(0).toUpperCase() + type.slice(1));
+    container.appendChild(input);
+}
+
+function removeField(type) {
+    let container = document.getElementById(type + '-container');
+    let inputs = container.querySelectorAll('input');
+    if (inputs.length > 1) { 
+        container.removeChild(inputs[inputs.length - 1]);
+    }
+}
+
+function saveFormData() {
+    let inputs = document.querySelectorAll('#groundCheckForm input, #groundCheckForm select');
+    let formData = {};
+    inputs.forEach(input => {
+        if (input.type === "checkbox" || input.type === "radio") {
+            formData[input.name] = input.checked;
+        } else {
+            formData[input.name] = input.value;
+        }
+    });
+    localStorage.setItem("groundCheckFormData", JSON.stringify(formData));
+}
+
+function loadFormData() {
+    let savedData = localStorage.getItem("groundCheckFormData");
+    if (!savedData) return;
+    let formData = JSON.parse(savedData);
+
+    Object.keys(formData).forEach(name => {
+        let element = document.querySelector(`[name="${name}"]`);
+        if (element) {
+            if (element.type === "checkbox" || element.type === "radio") {
+                element.checked = formData[name];
+            } else {
+                element.value = formData[name];
+            }
+        }
+    });
+}
+
+function toggleChartMode() {
+    let mode = document.querySelector('input[name="chartMode"]:checked').value;
+
+    if (mode === "normal") {
+        document.getElementById("tx1NormalWrapper").style.display = "block";
+        document.getElementById("tx2NormalWrapper").style.display = "block";
+        document.getElementById("mirrorWrapper").style.display = "none";
+    } else {
+        document.getElementById("tx1NormalWrapper").style.display = "none";
+        document.getElementById("tx2NormalWrapper").style.display = "none";
+        document.getElementById("mirrorWrapper").style.display = "block";
+    }
+}
+
+function resetFormData() {
+    localStorage.removeItem("groundCheckFormData");
+    document.getElementById("groundCheckForm").reset();
+
+    Object.keys(chartInstances).forEach(key => {
+        if (chartInstances[key]) {
+            chartInstances[key].destroy();
+        }
+    });
+    chartInstances = {};
+}
+
+function renderSingleChart(canvasId, label, rawData, plotData, labels, color, degreesMirror) {
+    if (chartInstances[canvasId]) chartInstances[canvasId].destroy();
+
+    chartInstances[canvasId] = new Chart(document.getElementById(canvasId).getContext('2d'), {
+        type: 'line',
+        data: {
+            labels: labels.map(d => d+"°"),
+            datasets: [{
+                label: label,
+                data: plotData,
+                borderColor: color,
+                backgroundColor: color.replace('1)', '0.1)'),
+                pointBackgroundColor: color,
+                pointRadius: 4,
+                fill: false,
+                tension: 0.2,
+                rawValues: rawData
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                title: {
+                    display: true,
+                    text: label + ' Ground Performance Curve',
+                    font: { size: 18, weight: 'bold' },
+                    padding: { top: 10, bottom: 20 }
+                },
+                datalabels: {
+                    color: 'black',
+                    align: 'top',
+                    font: { weight: 'bold' },
+                    formatter: (value, ctx) => {
+                        let raw = ctx.dataset.rawValues[ctx.dataIndex];
+                        return raw.toFixed(2);
+                    }
+                },
+                annotation: {
+                    annotations: {
+                        verticalLine: {
+                            type: 'line',
+                            xMin: degreesMirror.indexOf(0),
+                            xMax: degreesMirror.indexOf(0),
+                            borderColor: 'black',
+                            borderWidth: 2
+                        },
+                        horizontalLine: {
+                            type: 'line',
+                            yMin: 0,
+                            yMax: 0,
+                            borderColor: 'black',
+                            borderWidth: 2
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: { title: { display: true, text: 'Degree (°)' } },
+                y: { title: { display: true, text: 'DDM (%)' } }
+            }
+        },
+        plugins: [ChartDataLabels]
+    });
+}
+
+function renderMirrorChart(canvasId, datasets, labels) {
+    if (chartInstances[canvasId]) chartInstances[canvasId].destroy();
+
+    chartInstances[canvasId] = new Chart(document.getElementById(canvasId).getContext('2d'), {
+        type: 'line',
+        data: {
+            labels: labels.map(d => d+"°"),
+            datasets: datasets.map(ds => ({
+                label: ds.label,
+                data: ds.plotData,
+                borderColor: ds.color,
+                backgroundColor: ds.color.replace('1)', '0.1)'),
+                pointBackgroundColor: ds.color,
+                pointRadius: 4,
+                fill: false,
+                tension: 0.2,
+                rawValues: ds.rawData
+            }))
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                title: {
+                    display: true,
+                    text: '(TX1 & TX2) Ground Performance Curve',
+                    font: { size: 18, weight: 'bold' },
+                    padding: { top: 10, bottom: 20 }
+                },
+                datalabels: {
+                    color: 'black',
+                    align: 'top',
+                    font: { weight: 'bold' },
+                    formatter: (value, ctx) => {
+                        let raw = ctx.dataset.rawValues[ctx.dataIndex];
+                        return raw.toFixed(2);
+                    }
+                },
+                annotation: {
+                    annotations: {
+                        verticalLine: {
+                            type: 'line',
+                            xMin: labels.indexOf(0),
+                            xMax: labels.indexOf(0),
+                            borderColor: 'black',
+                            borderWidth: 2
+                        },
+                        horizontalLine: {
+                            type: 'line',
+                            yMin: 0,
+                            yMax: 0,
+                            borderColor: 'black',
+                            borderWidth: 2
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: { title: { display: true, text: 'Degree (°)' } },
+                y: { title: { display: true, text: 'DDM (%)' } }
+            }
+        },
+        plugins: [ChartDataLabels]
+    });
+}
+
+function generateGrafik() {
+    let degrees = [35,30,25,20,15,10,5,1.85,0,1.85,5,10,15,20,25,30,35];
+    let tx1 = [], tx2 = [];
+    let allRows = document.querySelectorAll('tbody tr');
+    allRows.forEach(row => {
+        let inputs = row.querySelectorAll('input[type="number"]');
+        if (inputs.length >= 7) {
+            tx1.push(parseFloat(inputs[0].value) || 0);
+            tx2.push(parseFloat(inputs[6].value) || 0);
+        }
+    });
+
+    let tx1Mirror = tx1.map(v => Math.abs(v));
+    let tx2Mirror = tx2.map(v => Math.abs(v));
+
+    // OPSI 1
+    renderSingleChart('chartTx1Normal', 'TX1', tx1, tx1, degrees, 'rgba(0,0,255,1)', degrees);
+    renderSingleChart('chartTx2Normal', 'TX2', tx2, tx2, degrees, 'rgba(255,0,0,1)', degrees);
+
+    // OPSI 2
+    renderMirrorChart("chartMirror", [
+        { label: "TX1", rawData: tx1, plotData: tx1Mirror, color: "rgba(0,0,255,1)" },
+        { label: "TX2", rawData: tx2, plotData: tx2Mirror, color: "rgba(255,0,0,1)" }
+    ], degrees);
+}
+
+window.addEventListener("load", loadFormData);
+document.getElementById('groundCheckForm').addEventListener("input", saveFormData);
+</script>
+
+
+
+
+{% endblock %}

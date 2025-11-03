@@ -1,0 +1,289 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+ 
+    body {
+        font-family: 'Poppins', sans-serif;
+        margin: 0;
+        overflow-x: hidden;
+    }
+
+    .hero-section {
+        background: linear-gradient(135deg, #ffffff, #1e3c72, #2a5298);
+        background-size: 300% 300%;
+        animation: gradientAnimation 8s ease infinite;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        text-align: center;
+        padding: 2rem;
+    }
+
+    @keyframes gradientAnimation {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    .hero-logo {
+        width: 150px;
+        margin-bottom: 1rem;
+    }
+
+    .hero-content h1 {
+        font-size: 3rem;
+        font-weight: 700;
+        color: #fff;
+        text-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
+        margin-bottom: 0.5rem;
+    }
+
+    .hero-content p {
+        font-size: 1.25rem;
+        max-width: 600px;
+        margin: 0 auto 2rem;
+        color: #f0f0f0;
+    }
+
+    .btn-primary-custom {
+        background: linear-gradient(45deg, #ffffff, #1e3c72);
+        color: #1e3c72;
+        font-weight: 600;
+        border: 2px solid #1e3c72;
+        padding: 0.75rem 2rem;
+        border-radius: 50px;
+        transition: all 0.4s ease;
+        margin: 0.5rem 0;
+        width: 200px;
+    }
+
+    .btn-primary-custom:hover {
+        background: #1e3c72;
+        color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(30, 60, 114, 0.4);
+    }
+
+    .login-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.5s ease, visibility 0.5s ease;
+        z-index: 1000;
+    }
+
+    .login-overlay.active {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .login-card {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+        width: 90%;
+        max-width: 400px;
+        transform: scale(0.9) translateY(20px);
+        opacity: 0;
+        transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .login-overlay.active .login-card {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
+
+   .close-btn {
+    position: absolute;
+    top: 3px;
+    right: 7px;
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: #6c757d;
+    cursor: pointer;
+    z-index: 10;
+    line-height: 1;
+    padding: 7px; 
+    transition: color 0.2s ease;
+}
+
+
+    /* Wave Header */
+    .wave-header {
+        position: absolute;
+        top: -60px;
+        left: 0;
+        width: 100%;
+        height: 220px;
+        overflow: hidden;
+        line-height: 0;
+        z-index: 1;
+    }
+
+    .wave-header svg {
+        display: block;
+        width: calc(100% + 1.3px);
+        height: 220px;
+    }
+
+    .wave-header .shape-fill {
+        fill: url(#gradient);
+    }
+
+    .card-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    /* Form */
+    .login-card h4 {
+        font-weight: 700;
+        color: #1e3c72;
+    }
+
+    .login-card p {
+        color: #6c757d;
+        font-size: 0.9rem;
+    }
+
+    .form-control {
+        border-radius: 12px;
+        padding: 0.75rem;
+        border: 1px solid #ddd;
+        transition: all 0.3s ease;
+    }
+
+    .btn-login {
+        border-radius: 12px;
+        padding: 0.8rem;
+        background: linear-gradient(45deg, #1e3c72, #2a5298);
+        border: none;
+        transition: 0.3s;
+        font-weight: 600;
+        color: white;
+    }
+
+    .btn-login:hover {
+        opacity: 0.95;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 14px rgba(30, 60, 114, 0.4);
+    }
+    .btn-custom {
+    background-color: transparent;
+    border: none;
+    color: #1e3c72;
+    padding: 0.5rem 1rem;
+    border-radius: 12px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+
+
+</style>
+<div class="hero-section">
+    <div class="hero-content">
+        <img src="{{ url_for('static', filename='img/airnav_logo.png') }}" alt="AirNav Logo" class="hero-logo">
+        <h1>AirNav Surabaya</h1>
+        <p>Aviation Monitoring </p>
+        <button id="openLoginBtn" class="btn btn-primary-custom">Sign in</button>
+        <div>
+    <a href="{{ url_for('auth.register') }}" class="btn btn-custom text-white">Create an account</a>
+</div>
+    </div>
+</div>
+<div id="loginOverlay" class="login-overlay">
+    <div class="login-card">
+        <button id="closeLoginBtn" class="close-btn text-end">&times;</button>
+        <div class="wave-header">
+            <svg viewBox="0 0 500 150" preserveAspectRatio="none">
+                <defs>
+                    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" style="stop-color:#1e3c72; stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#2a5298; stop-opacity:1" />
+                    </linearGradient>
+                </defs>
+                <path d="M-5.92,42.39 C149.99,150.00 271.64,-49.99 503.10,99.49 L500.00,0.00 L0.00,0.00 Z" class="shape-fill"></path>
+            </svg>
+        </div>
+        <div class="card-content">
+            <div class="text-center mb-4">
+                <img src="{{ url_for('static', filename='img/airnav_logo.png') }}" alt="AirNav Logo" style="max-width: 90px;">
+                <h4 class="mt-3">Welcome</h4>
+                <p>Silahkan Login</p>
+            </div>
+            <form method="POST">
+                <div class="mb-3 input-group">
+                    <span class="input-group-text"><i class="bi bi-person"></i></span>
+                    <input type="text" name="username" class="form-control" placeholder="Masukkan Username" required>
+                </div>
+                <div class="mb-3 input-group">
+                    <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                    <input type="password" id="password" name="password" class="form-control" placeholder="Masukkan Password" required>
+                    <span class="input-group-text" id="togglePassword" style="cursor:pointer;">
+                        <i class="bi bi-eye"></i>
+                    </span>
+                </div>
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-login">LOGIN</button>
+                </div>
+            </form>
+            <div class="text-center mt-3 text-muted">
+                <small><a href="{{ url_for('auth.forgot_password') }}">Lupa password?</a></small>
+                <br>
+                <small>Belum punya akun? <a href="{{ url_for('auth.register') }}">Daftar di sini</a></small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+const togglePassword = document.getElementById('togglePassword');
+const password = document.getElementById('password');
+
+togglePassword.addEventListener('click', function() {
+    const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+    password.setAttribute('type', type);
+    this.innerHTML = type === 'password' ? '<i class="bi bi-eye"></i>' : '<i class="bi bi-eye-slash"></i>';
+});
+    document.addEventListener('DOMContentLoaded', function() {
+        const openLoginBtn = document.getElementById('openLoginBtn');
+        const closeLoginBtn = document.getElementById('closeLoginBtn');
+        const loginOverlay = document.getElementById('loginOverlay');
+
+        openLoginBtn.addEventListener('click', function() {
+            loginOverlay.classList.add('active');
+        });
+
+        closeLoginBtn.addEventListener('click', function() {
+            loginOverlay.classList.remove('active');
+        });
+
+        loginOverlay.addEventListener('click', function(e) {
+            if (e.target.id === 'loginOverlay') {
+                loginOverlay.classList.remove('active');
+            }
+        });
+    });
+</script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+{% endblock %}
+
+{% block footer %}{% endblock %}

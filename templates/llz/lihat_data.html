@@ -1,0 +1,252 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="data-section ">
+  <div class="container ">
+    <h2 class="fw-bold text-center mb-4 " style="color:#0a1f44;">DAFTAR GC LOCALIZER</h2>
+   <div class="row mb-3 align-items-center">
+  <div class="col-12 col-md-6 mb-2 mb-md-0">
+    <input type="text" id="searchInput" class="form-control shadow-sm" placeholder="Search...">
+  </div>
+  <div class="col-6 col-md-3 d-flex justify-content-start">
+    <a href="{{ url_for('groundcheck.ground_check') }}" class="btn btn-outline-success shadow-sm w-100">
+      + Add GC LLZ
+    </a>
+  </div>
+  <div class="col-6 col-md-3 d-flex justify-content-end">
+    <a href="{{ url_for('groundcheck.cek_status') }}" class="btn btn-outline-info shadow-sm w-100">
+      View Status
+    </a>
+  </div>
+</div>
+<div class="table-responsive custom-table-wrapper">
+  <table id="gcTable" class="custom-table">
+        <thead  >
+          <tr>
+            <th>No</th>
+            <th>Lokasi</th>
+            <th>Tanggal</th>
+            <th>Teknisi</th>
+            <th>Catatan</th>
+            
+            <th><i class="bi bi-tools"></i></th>
+            {% if current_user.role|lower in ["admin","manager teknik 1","manager teknik 2","manager teknik 3","manager teknik 4","manager teknik 5"] %}
+              <th>Status</th>
+            {% endif %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for gc in ground_check %}
+          <tr>
+            <td class="fw-bold text-center">{{ loop.index }}</td>
+            <td>{{ gc.lokasi }}</td>
+            <td>{{ gc.tanggal.strftime("%d-%m-%Y") }}</td>
+            <td style="white-space: normal; max-width: 150px;">{{ gc.teknisi }}</td>
+            <td style="white-space: normal; max-width: 200px;">{{ gc.catatan }}</td>
+            <td>
+              <div class="d-flex nowrap gap-1 justify-content-center">
+                <a href="{{ url_for('groundcheck.detail_data', id=gc.id) }}" 
+                   class="btn btn-sm btn-outline-info" title="Detail">
+                  <i class="bi bi-eye"></i>
+                </a>
+                <a href="{{ url_for('groundcheck.update', id=gc.id) }}" 
+                   class="btn btn-sm btn-outline-warning" title="Edit">
+                  <i class="bi bi-pencil-square"></i>
+                </a>
+               <a href="{{ url_for('groundcheck.delete_ground_check', id=gc.id) }}" 
+                   class="btn btn-sm btn-outline-danger" title="Hapus"
+                   onclick="return confirm('Yakin ingin menghapus data ini?')">
+                   <i class="bi bi-trash"></i>
+                </a>
+              </div>
+            </td>
+           {% if current_user.role|lower in ["admin","manager teknik 1","manager teknik 2","manager teknik 3","manager teknik 4","manager teknik 5"] %}
+              <td class="text-center ">
+                {% if gc.status == "Selesai" %}
+                  <span class="badge bg-success px-3 py-2 rounded-pill">Selesai</span><br>
+                  <small class="text-white">Manager: {{ gc.manager }}</small>
+                {% else %}
+                  <form action="{{ url_for('groundcheck.acc', id=gc.id) }}" method="POST" class="d-inline">
+                    <button type="submit" class="btn btn-warning btn-sm px-1.5 shadow-sm rounded-pill">
+                      <i class="bi bi-check-circle">Accept</i>
+                    </button>
+                  </form>
+                {% endif %}
+              </td>
+            {% endif %}
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="{% if current_user.role|lower in ['admin','manager teknik 1','manager teknik 2','manager teknik 3','manager teknik 4','manager teknik 5'] %}7{% else %}6{% endif %}" 
+                class="text-center text-muted py-4">Belum ada data</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+<script>
+document.getElementById("searchInput").addEventListener("keyup", function() {
+  let filter = this.value.toLowerCase();
+  let rows = document.querySelectorAll("#gcTable tbody tr");
+  rows.forEach(row => {
+    let text = row.innerText.toLowerCase();
+    row.style.display = text.includes(filter) ? "" : "none";
+  });
+});
+</script>
+<style>
+/* Hanya berlaku untuk table ini */
+.custom-table-wrapper {
+ margin: 20px 0;
+  border: 2px solid linear-gradient(
+    to bottom,
+    #ffffff 0%,    
+    #f2f6fb 15%,   
+    #012b5a 55%,   
+    #0a1f44 100%   
+  );
+  border-radius: 12px;
+  overflow-x: visible;
+}
+/* Hanya aktif di mobile */
+@media (max-width: 992px) {
+  .custom-table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+.custom-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: "Poppins", sans-serif;
+  color:white ;
+  background: linear-gradient(
+    to bottom,
+    #ffffff 0%,    
+    #114381 15%,   
+    #012b5a 55%,   
+    #0a1f44 100%   
+  );
+}
+
+.custom-table thead {
+  background: linear-gradient(
+    to bottom, 
+    #114381 15%,   
+    #012b5a 55%,    
+  );
+  color: #012b5a;
+  text-align: center;
+}
+
+.custom-table th,
+.custom-table td {
+  padding: 12px 15px;
+  border-bottom: 1px solid #eee;
+  vertical-align: middle;
+}
+
+.custom-table tbody tr:hover {
+  background: rgba(255,255,255,0.05);
+  transform: scale(1.01);
+  transition: 0.2s;
+}
+
+.custom-table .action-btns a {
+  margin: 0 5px;
+  color: #0d6efd;
+  text-decoration: none;
+  font-size: 1.1rem;
+}
+
+.custom-table .action-btns a:hover {
+  color: #0a58ca;
+}
+
+.custom-table .status.selesai {
+  background: #198754;
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 50px;
+  font-size: 0.85rem;
+}
+
+.custom-table .approve-btn {
+  background: #198754;
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.custom-table .approve-btn:hover {
+  background: #157347;
+}
+
+.custom-table .no-data {
+  text-align: center;
+  color: #888;
+  padding: 30px 0;
+}
+  /* Background sama kayak Home */
+  .data-section {
+   background: linear-gradient(
+    to bottom,
+    #ffffff 0%,    
+    #f2f6fb 15%,   
+    #012b5a 55%,   
+    #0a1f44 100%   
+  );
+  min-height: 100vh;        
+  padding: 30px 0;    
+}
+
+
+@media (max-width: 768px) {
+  .dashboard-section {
+    min-height: auto;      
+    padding-top: auto;
+    padding-bottom: auto;
+  }
+}
+
+  #gcTable th, #gcTable td {
+    padding: 12px;
+    vertical-align: middle;
+    text-align: center;
+  }
+  #gcTable tbody tr:hover {
+    background-color: linear-gradient(180deg, #ffffff 0%, #0a1f44 100%);
+    transform: scale(1.01);
+    transition: 0.2s;
+  }
+
+  @media (max-width: 768px) {
+    #gcTable {
+      font-size: 13px;
+    }
+    #gcTable th, #gcTable td {
+      padding: 6px;
+      white-space: normal !important;
+      word-wrap: break-word;
+    }
+    #gcTable .btn {
+      padding: 2px 6px;
+      font-size: 12px;
+    }
+  }
+</style>
+{% endblock %}
+{% block footer %}
+<footer class="footer-section text-white" style="background-color:#0a1f44;">
+  <div class="container py-4">
+  <div class="text-center mt-3 small">
+      &copy; <span id="year"></span> AirNav Surabaya. All Rights Reserved.
+    </div>
+  </div>
+</footer>{% endblock %}
+
