@@ -1,0 +1,115 @@
+
+{% extends "base.html" %}
+{% block content %}
+<div class="custom-container mt-4">
+    <h3 class="mb-4">Tabel Data Performance Check ILS</h3>
+
+    <a href="{{ url_for('home') }}" class="btn btn-secondary mb-3">Kembali</a>
+    <a href="{{ url_for('ils.add_transmission_ils') }}" class="btn btn-primary mb-3">Tambah</a>
+    <a href="{{ url_for('ils.dashboard_ils') }}" class="btn btn-danger mb-3">Lihat Dashboard</a>
+
+    <div class="mt-5">
+        <h4 class="mb-3">Filter Lokasi</h4>
+        <form method="GET" class="mb-4">
+            <div class="row">
+                <div class="col-md-4">
+                    <select name="lokasi" class="form-select" onchange="this.form.submit()">
+                        <option value="">-- Semua Lokasi --</option>
+                        <option value="Surabaya" {% if request.args.get('lokasi')=='Surabaya' %}selected{% endif %}>
+                            Surabaya
+                        </option>
+                        <option value="Malang" {% if request.args.get('lokasi')=='Malang' %}selected{% endif %}>
+                            Malang
+                        </option>
+                        <option value="Dhoho" {% if request.args.get('lokasi')=='Dhoho' %}selected{% endif %}>
+                            Dhoho
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </form>
+
+        {% for row in combined_data %}
+        {% if not request.args.get('lokasi') or row.lokasi == request.args.get('lokasi') %}
+        <div class="card mb-4 shadow-sm border-0">
+            <div class="card-header bg-primary text-white">
+                <strong>Lokasi:</strong> {{ row.lokasi }} |
+                <strong>Tanggal:</strong> {{ row.tanggal }} |
+                <strong>PIC:</strong> {{ row.pic }}
+            </div>
+            <div class="card-body">
+                <h5 class="text-secondary">G/P</h5>
+                <table class="table table-sm table-bordered mb-3">
+                    <tr>
+                        <th>CSB Power</th>
+                        <td>{{ row.gp_csb_power }}</td>
+                        <th>SBO Power</th>
+                        <td>{{ row.gp_sbo_power }}</td>
+                        <th>SDM 80</th>
+                        <td>{{ row.gp_sdm_80 }}</td>
+                    </tr>
+                    <tr>
+                        <th>Course DDM</th>
+                        <td>{{ row.gp_course_ddm }}</td>
+                        <th>DS DDM</th>
+                        <td>{{ row.gp_ds_ddm }}</td>
+                        <th>CLR DDM</th>
+                        <td>{{ row.gp_clr_ddm }}</td>
+                    </tr>
+                </table>
+
+                <h5 class="text-secondary">Localizer</h5>
+                <table class="table table-sm table-bordered mb-3">
+                    <tr>
+                        <th>CSB Power</th>
+                        <td>{{ row.loc_csb_power }}</td>
+                        <th>SBO Power</th>
+                        <td>{{ row.loc_sbo_power }}</td>
+                        <th>SDM 40</th>
+                        <td>{{ row.loc_sdm_40 }}</td>
+                    </tr>
+                    <tr>
+                        <th>Course DDM</th>
+                        <td>{{ row.loc_course_ddm }}</td>
+                        <th>DS DDM</th>
+                        <td>{{ row.loc_ds_ddm }}</td>
+                        <th>CLR DDM</th>
+                        <td>{{ row.loc_clr_ddm }}</td>
+                    </tr>
+                </table>
+
+                <h5 class="text-secondary">TDME</h5>
+                <table class="table table-sm table-bordered">
+                    <tr>
+                        <th>TX1 Power</th>
+                        <td>{{ row.tdme_tx1_power }}</td>
+                        <th>Spacing 1</th>
+                        <td>{{ row.tdme_spacing1 }}</td>
+                        <th>Delay 1</th>
+                        <td>{{ row.tdme_delay1 }}</td>
+                    </tr>
+                    <tr>
+                        <th>TX2 Power</th>
+                        <td>{{ row.tdme_tx2_power }}</td>
+                        <th>Spacing 2</th>
+                        <td>{{ row.tdme_spacing2 }}</td>
+                        <th>Delay 2</th>
+                        <td>{{ row.tdme_delay2 }}</td>
+                    </tr>
+                </table>
+
+                <div class="d-flex justify-content-end">
+                    <a href="{{ url_for('ils.edit_transmission_ils', station_id=row.id) }}"
+                        class="btn btn-sm btn-warning me-2">Edit</a>
+                    <form action="{{ url_for('ils.delete_transmission_ils', station_id=row.id) }}" method="POST"
+                        onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
+                        <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

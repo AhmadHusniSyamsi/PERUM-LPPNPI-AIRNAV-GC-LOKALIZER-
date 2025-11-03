@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<div class="container mt-4">
+    <h2>{{ form_title }}</h2>
+    <form method="POST" class="card p-4 shadow-sm mb-4">
+        <!-- Lokasi, Tanggal, PIC -->
+        <div class="form-group mb-3">
+            <label class="fw-bold text-primary">Lokasi</label>
+            <select class="form-select border border-primary shadow-sm" name="lokasi" required>
+                <option value="" disabled selected>Pilih Lokasi</option>
+                <option value="Dhoho" {% if data and data.lokasi=='Dhoho' %}selected{% endif %}>Dhoho</option>
+                <option value="Malang" {% if data and data.lokasi=='Malang' %}selected{% endif %}>Malang</option>
+                <option value="Surabaya" {% if data and data.lokasi=='Surabaya' %}selected{% endif %}>Surabaya</option>
+            </select>
+        </div>
+
+        <div class="form-group mb-3">
+            <label class="fw-bold text-primary">Tanggal</label>
+            <input type="date" name="tanggal" class="form-control" value="{{ data.tanggal if data else '' }}" required>
+        </div>
+
+        <div class="form-group mb-4">
+            <label class="fw-bold text-primary">PIC</label>
+            <input type="text" name="pic" class="form-control" value="{{ data.pic if data else '' }}" required>
+        </div>
+
+
+
+
+        <!-- G/P Form -->
+        <div class="card p-4 shadow-sm mb-4">
+            <div class="row-form">
+                <div class="col-md-12">
+                    <h5 class="header-blue">Glide Path</h5>
+                    <div class="form-group">
+                        <label>CSB Power</label>
+                        <input type="text" name="gp_csb_power" class="form-control"
+                            value="{{ transmission.gp_csb_power or '' }}">
+                    </div>
+                    <div class="form-group">
+                        <label>SBO Power</label>
+                        <input type="text" name="gp_sbo_power" class="form-control"
+                            value="{{ transmission.gp_sbo_power or '' }}">
+                    </div>
+                    <div class="form-group">
+                        <label>SDM 80</label>
+                        <input type="text" name="gp_sdm_80" class="form-control"
+                            value="{{ transmission.gp_sdm_80 or '' }}">
+                    </div>
+                    <div class="form-group">
+                        <label>Course DDM</label>
+                        <input type="text" name="gp_course_ddm" class="form-control"
+                            value="{{ transmission.gp_course_ddm or '' }}">
+                    </div>
+                    <div class="form-group">
+                        <label>DS DDM</label>
+                        <input type="text" name="gp_ds_ddm" class="form-control"
+                            value="{{ transmission.gp_ds_ddm or '' }}">
+                    </div>
+                    <div class="form-group">
+                        <label>CLR DDM</label>
+                        <input type="text" name="gp_clr_ddm" class="form-control"
+                            value="{{ transmission.gp_clr_ddm or '' }}">
+                    </div>
+                    <!-- <div class="text-center">
+                        <button type="submit" class="btn btn-danger mt-3">Simpan G/P</button>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Localizer Form -->
+        <div class="card p-4 shadow-sm mb-4">
+            <div class="row">
+                <div class="col-md-12">
+                    <h5 class="header-blue">Localizer</h5>
+                    <div class="form-group">
+                        <label>CSB Power</label>
+                        <input type="text" name="loc_csb_power" class="form-control"
+                            value="{{ transmission.loc_csb_power or '' }}">
+                    </div>
+                    <div class="form-group">
+                        <label>SBO Power</label>
+                        <input type="text" name="loc_sbo_power" class="form-control"
+                            value="{{ transmission.loc_sbo_power or '' }}">
+                    </div>
+                    <div class="form-group">
+                        <label>SDM 40</label>
+                        <input type="text" name="loc_sdm_40" class="form-control"
+                            value="{{ transmission.loc_sdm_40 or '' }}">
+                    </div>
+                    <div class="form-group">
+                        <label>Course DDM</label>
+                        <input type="text" name="loc_course_ddm" class="form-control"
+                            value="{{ transmission.loc_course_ddm or '' }}">
+                    </div>
+                    <div class="form-group">
+                        <label>DS DDM</label>
+                        <input type="text" name="loc_ds_ddm" class="form-control"
+                            value="{{ transmission.loc_ds_ddm or '' }}">
+                    </div>
+                    <div class="form-group">
+                        <label>CLR DDM</label>
+                        <input type="text" name="loc_clr_ddm" class="form-control"
+                            value="{{ transmission.loc_clr_ddm or '' }}">
+                    </div>
+                    <!-- <div class="text-center">
+                        <button type="submit" class="btn btn-danger mt-3">Simpan Localizer</button>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+
+        <!-- TDME Form -->
+        <div class="card p-4 shadow-sm mb-4">
+            <div class="row">
+                <div class="col-md-12">
+                    <h5 class="header-blue">TDME</h5>
+                    <div class="form-group">
+                        <label>TX1 Power</label>
+                        <input type="text" name="tdme_tx1_power" class="form-control"
+                            value="{{ transmission.tdme_tx1_power or '' }}">
+                    </div>
+                    <div class="form-group">
+                        <label>Spacing 1</label>
+                        <input type="text" name="tdme_spacing1" class="form-control"
+                            value="{{ transmission.tdme_spacing1 or '' }}">
+                    </div>
+                    <div class="form-group">
+                        <label>Delay 1</label>
+                        <input type="text" name="tdme_delay1" class="form-control"
+                            value="{{ transmission.tdme_delay1 or '' }}">
+                    </div>
+                    <div class="form-group">
+                        <label>TX2 Power</label>
+                        <input type="text" name="tdme_tx2_power" class="form-control"
+                            value="{{ transmission.tdme_tx2_power or '' }}">
+                    </div>
+                    <div class="form-group">
+                        <label>Spacing 2</label>
+                        <input type="text" name="tdme_spacing2" class="form-control"
+                            value="{{ transmission.tdme_spacing2 or '' }}">
+                    </div>
+                    <div class="form-group">
+                        <label>Delay 2</label>
+                        <input type="text" name="tdme_delay2" class="form-control"
+                            value="{{ transmission.tdme_delay2 or '' }}">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-center">
+            <button type="submit" class="btn btn-danger mt-3">Simpan ILS</button>
+        </div>
+    </form>
+    <!-- Back Button -->
+    <a href="{{ url_for('ils.view_data_ils') }}" class="btn btn-secondary">Kembali</a>
+</div>
+{% endblock %}

@@ -1,0 +1,230 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+
+.profile-page-wrapper {
+    padding: 3rem 1.5rem;
+    min-height: calc(100vh - 56px);
+}
+
+.profile-main-card {
+    background-color: #ffffff;
+    border-radius: 1.5rem;
+    box-shadow: 0 15px 45px rgba(0,0,0,0.1);
+    padding: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    max-width: 1000px;
+    margin: auto;
+}
+
+@media (min-width: 768px) {
+    .profile-main-card {
+        flex-direction: row;
+    }
+}
+
+.profile-left-col {
+    flex: 0 0 35%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-right: 1px solid #e0e0e0;
+    padding-right: 2.5rem;
+}
+
+@media (max-width: 767px) {
+    .profile-left-col {
+        border-right: none;
+        padding-right: 0;
+        padding-bottom: 2rem;
+        border-bottom: 1px solid #e0e0e0;
+    }
+}
+
+.profile-photo {
+    width: 180px;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 5px solid #f8f9fa;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.profile-photo:hover {
+    transform: scale(1.05);
+}
+
+.profile-name {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1e3c72;
+    margin-top: 1.5rem;
+    margin-bottom: 0.25rem;
+}
+
+.profile-role {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #2a5298;
+}
+
+.edit-profile-btn {
+    background: linear-gradient(45deg, #1e3c72, #2a5298);
+    color: #ffffff;
+    border: none;
+    padding: 0.75rem 2rem;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-top: 2rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.edit-profile-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(30,60,114,0.3);
+}
+
+.profile-right-col {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding-left: 2.5rem;
+}
+
+@media (max-width: 767px) {
+    .profile-right-col {
+        padding-left: 0;
+    }
+}
+
+.info-card {
+    background-color: #f8f9fa;
+    border-radius: 1rem;
+    padding: 1.25rem;
+    box-shadow: 0 3px 15px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    border-left: 5px solid #2a5298;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.info-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+.info-card label {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #8898aa;
+    text-transform: uppercase;
+    margin-bottom: 0.25rem;
+}
+
+.info-card input,
+.info-card select {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.5rem;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #34495e;
+    background-color: #fff;
+}
+
+.info-card input:focus,
+.info-card select:focus {
+    outline: none;
+    border-color: #1e3c72;
+    box-shadow: 0 0 5px rgba(30,60,114,0.3);
+}
+</style>
+
+<div class="profile-page-wrapper">
+    <div class="profile-main-card">
+
+        <div class="profile-left-col">
+            <a href="#" data-bs-toggle="modal" data-bs-target="#photoModal">
+    <img src="{{ url_for('profile_photo', user_id=current_user.id) }}" 
+         class="profile-photo" alt="Foto Profil">
+            </a>
+
+            <h3 class="profile-name">{{ current_user.nama or current_user.username }}</h3>
+            <p class="profile-role">{{ current_user.jabatan or '-' }}</p>
+        </div>
+
+        <div class="profile-right-col">
+            <form action="{{ url_for('edit_profile') }}" method="POST" enctype="multipart/form-data">
+                <div class="info-card">
+                    <label for="nama">Nama</label>
+                    <input type="text" id="nama" name="nama" value="{{ current_user.nama }}">
+                </div>
+                    <div class="info-card">
+                    <label for="jabatan" class="form-label">Jabatan</label>
+                    <input type="text" class="form-control" name="jabatan" id="jabatan" value="{{ current_user.jabatan or '' }}">
+                    </div>
+                <div class="info-card">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" value="{{ current_user.email }}">
+                </div>
+                <div class="info-card">
+                    <label for="nip">NIP</label>
+                    <input type="text" id="nip" name="nip" value="{{ current_user.nip }}">
+                </div>
+                <div class="info-card">
+                    <label for="lokasi.penempatan">Penempatan</label>
+                    <input type="text" id="lokasi.penempatan" name="loaksi.penempatan" value="{{ current_user.lokasi_penempatan }}">
+                </div>
+                <div class="info-card">
+                    <label for="no_hp">No HP</label>
+                    <input type="text" id="no_hp" name="no_hp" value="{{ current_user.no_hp }}">
+                </div>
+                <div class="info-card">
+                    <label for="tanggal_lahir">Tanggal Lahir</label>
+                    <input type="date" id="tanggal_lahir" name="tanggal_lahir" value="{{ current_user.tanggal_lahir|default('') }}">
+                </div>
+                <div class="info-card">
+                    <label for="jenis_kelamin">Jenis Kelamin</label>
+                    <select id="jenis_kelamin" name="jenis_kelamin">
+                        <option value="Laki-laki" {% if current_user.jenis_kelamin == 'Laki-laki' %}selected{% endif %}>Laki-laki</option>
+                        <option value="Perempuan" {% if current_user.jenis_kelamin == 'Perempuan' %}selected{% endif %}>Perempuan</option>
+                    </select>
+                </div>
+                <div class="info-card">
+                    <label for="photo">Foto Profil</label>
+                    <input type="file" id="photo" name="photo">
+                </div>
+                <div class="text-center mt-3">
+                    <button type="submit" class="edit-profile-btn">
+                        <i class="bi bi-check-circle me-2"></i> Simpan Perubahan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="photoModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content profile-modal-content">
+            <div class="modal-body profile-modal-body text-center">
+    <img src="{{ url_for('profile_photo', user_id=current_user.id) }}" class="img-fluid">
+         </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
